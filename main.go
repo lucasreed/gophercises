@@ -33,6 +33,7 @@ func parseLines(lines [][]string) []problem {
 }
 
 func startQuiz(c []problem, t int64) {
+	fmt.Printf("GO! You have %v seconds!\n", t)
 	timer := time.NewTimer(time.Second * time.Duration(t))
 	correct := 0
 	for i, val := range c {
@@ -52,10 +53,13 @@ func startQuiz(c []problem, t int64) {
 		case answer := <-answerChan:
 			if strings.TrimSpace(answer) == val.a {
 				correct++
+			} else {
+				fmt.Print("WRONG!!\n")
 			}
 		}
 	}
 
+	// This line will only print if the user makes it through all questions before the time limit.
 	fmt.Printf("\nYou got %v correct out of %v\n", correct, len(c))
 }
 
@@ -73,5 +77,8 @@ func main() {
 	check(err)
 
 	lines := parseLines(csvData)
+
+	fmt.Print("Press 'Enter' to start the quiz...")
+	bufio.NewReader(os.Stdin).ReadBytes('\n')
 	startQuiz(lines, *timeLimit)
 }
